@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 const AUTH_DIR = process.env.AUTH_DIR || path.join(__dirname, 'auth_info');
 
 // ── RIYAD THE AI System Prompt ──
-const SYSTEM_PROMPT = `তুমি হলে "TUHIN ISALM" — একজন বন্ধু এবং সাহায্যকারী।
+const SYSTEM_PROMPT = `তুমি হলে "RIYAD THE AI" — একজন বন্ধু এবং সাহায্যকারী।
 
 তোমার ব্যক্তিত্ব:
 - তুমি ব্যবহারকারীর একজন বিশ্বস্ত বন্ধু এবং সব সময় সাহায্যের জন্য প্রস্তুত।
@@ -53,7 +53,7 @@ function escapeHtml(s) {
 }
 
 // ── Detect image generation requests ──
-function extractImagePrompdc'ext) {
+function extractImagePrompt(text) {
     const trimmed = text.trim();
     const cmdMatch = trimmed.match(/^\/(image|img|imagine)\s+(.+)/i);
     if (cmdMatch) return cmdMatch[2].trim();
@@ -70,7 +70,7 @@ function extractImagePrompdc'ext) {
 }
 
 // ── AI API ──
-const GEM_ID  = 'ba0fbe0d-976e-493a-afdb-6d8469e53df0';
+const GEM_ID  = 'c477280c-3abb-4a93-8b8a-fdc8e56830dc';
 const API_URL = `https://nxtai.zipohostbd.workers.dev/api/use?gem=${GEM_ID}`;
 const API_KEY = 'nxt_3a454c41e6a84aeead28d1fb4aec87a4';
 
@@ -90,7 +90,7 @@ async function askAI(userMessage) {
             || '⚠️ কোনো উত্তর পাওয়া যায়নি।';
     } catch (err) {
         pushLog('❌ AI Error: ' + (err.response?.status || err.message));
-        return '⚠️ দুঃখিত, AI সার্ভারে সমস্যা হচ্ছে। একটু পরে আবার চেষ্টা করুন।';
+        return '⚠️ দুঃখিত, AI সার্ভারে সমস্যা। একটু পরে আবার চেষ্টা করুন।';
     }
 }
 
