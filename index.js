@@ -11,20 +11,10 @@ const PORT = process.env.PORT || 3000;
 // ── Auth directory ──
 const AUTH_DIR = process.env.AUTH_DIR || path.join(__dirname, 'auth_info');
 
-// ── 📝 আপনার ব্যক্তিগত তথ্য ও নলেজ বেস (এখানে আপনার তথ্যগুলো লিখে দিন) ──
-const PERSONAL_INFO = `
-আমার নাম: রিয়াদ
-আমার পরিচয়: আমি একজন ডেভেলপার এবং ছাত্র। 
-আমার সার্ভিস/প্রোজেক্টসমূহ: 
-- বিভিন্ন ধরনের বট তৈরি এবং অটোমেশন।
-- জিমেইল বা সোশ্যাল মিডিয়া অ্যাকাউন্ট সম্পর্কিত সার্ভিস।
-যোগাযোগের মাধ্যম: Telegram (@zerox6t9)
-`;
-
-// ── AI Configuration: Gemini API বা OpenAI API সেটআপ ──
-const AI_PROVIDER   = 'gemini'; // 'gemini' অথবা 'openai' সিলেক্ট করতে পারেন
-const GEMINI_API_KEY = 'AQ.Ab8RN6Lk1fZCPOmdnwUgWWz36k21Dsykcbeyo-9bqjA_XexEgg'; 
-const OPENAI_API_KEY = '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';
+// ── NxT AI Configuration ──
+const NXT_API_KEY = 'nxt_2c624b598de74d58aa318ad7914f74a5'; 
+// আপনার NxT AI এর GEM ID (Shahriar বোটের ID নিচে দেওয়া হলো)
+const GEM_ID      = '9a189417-74bd-4a01-9712-cd3762d9a76d'; 
 
 // ── State ──
 let logs          = ['🚀 RIYAD PERSONAL AI starting up...'];
@@ -67,42 +57,27 @@ function extractImagePrompt(text) {
     return null;
 }
 
-// ── AI API with Gemini / OpenAI & Personal Knowledge Base ──
+// ── AI API Call with NxT AI ──
 async function askAI(userMessage) {
     try {
-        const systemPrompt = `তুমি হলে রিয়াদের পার্সোনাল এআই অ্যাসিস্ট্যান্ট। নিচের তথ্যগুলো ভালো করে পড়ে মনে রাখো এবং কেউ মেসেজ করলে এই তথ্যগুলোর ওপর ভিত্তি করে নিখুঁত উত্তর দাও। অন্য কোনো ভুল বা ভুয়া তথ্য দেবে না।\n\n[তথ্যভাণ্ডার]:\n${PERSONAL_INFO}`;
+        const url = `https://nxtai.site/api/use?gem=${GEM_ID}`;
+        const res = await axios.post(url, {
+            message: userMessage,
+            prompt: userMessage
+        }, {
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${NXT_API_KEY}`,
+                'x-api-key': NXT_API_KEY
+            },
+            timeout: 30000
+        });
 
-        if (AI_PROVIDER === 'gemini') {
-            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-            const res = await axios.post(geminiUrl, {
-                contents: [
-                    { role: "user", parts: [{ text: systemPrompt }, { text: userMessage }] }
-                ]
-            }, { headers: { 'Content-Type': 'application/json' }, timeout: 30000 });
-
-            return res.data?.candidates?.[0]?.content?.parts?.[0]?.text || '⚠️ কোনো উত্তর পাওয়া যায়নি।';
-
-        } else {
-            const openAiUrl = 'https://api.openai.com/v1/chat/completions';
-            const res = await axios.post(openAiUrl, {
-                model: 'gpt-4o-mini',
-                messages: [
-                    { role: "system", content: systemPrompt },
-                    { role: "user", content: userMessage }
-                ]
-            }, {
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${OPENAI_API_KEY}`
-                },
-                timeout: 30000
-            });
-
-            return res.data?.choices?.[0]?.message?.content || '⚠️ কোনো উত্তর পাওয়া যায়নি।';
-        }
+        if (typeof res.data === 'string') return res.data;
+        return res.data?.reply || res.data?.response || res.data?.message || res.data?.result || JSON.stringify(res.data);
 
     } catch (err) {
-        pushLog('❌ AI Error: ' + (err.response?.data?.error?.message || err.message));
+        pushLog('❌ NxT AI Error: ' + (err.response?.data?.error || err.message));
         return '⚠️ এই মুহূর্তে এআই সার্ভারে একটু সমস্যা হচ্ছে। দয়া করে একটু পরে চেষ্টা করুন।';
     }
 }
@@ -183,7 +158,7 @@ app.post('/api/wa/start', async (req, res) => {
     res.json({ ok: true, message: 'পেয়ারিং শুরু হচ্ছে...', phone });
 });
 
-// ── API: Stop / Disconnect Bot (ON/OFF feature) ──
+// ── API: Stop / Disconnect Bot ──
 app.post('/api/wa/stop', async (req, res) => {
     try {
         if (waSocket) { try { waSocket.end(); } catch (_) {} waSocket = null; }
@@ -215,7 +190,7 @@ app.post('/api/wa/reset', async (req, res) => {
     }
 });
 
-// ── MAIN: Terminal Dashboard with ON/OFF Switch ──
+// ── MAIN: Dashboard ──
 app.get('/', (_req, res) => {
     const logHTML = logs.slice(-40).reverse()
         .map(l => `<div class="line">&gt; ${escapeHtml(l)}</div>`).join('');
@@ -245,12 +220,6 @@ app.get('/', (_req, res) => {
         </div>
     `;
 
-    const resetBlock = `
-        <form method="POST" action="/api/wa/reset"
-              onsubmit="return confirm('Session reset হবে — আবার pair করতে হবে। চালিয়ে যাবেন?')">
-            <button type="submit" class="reset-btn">🧹 RESET SESSION</button>
-        </form>`;
-
     const refreshSec = pairingCode || waStarting ? 5 : 14;
 
     res.send(`<!DOCTYPE html>
@@ -278,7 +247,6 @@ input[type=tel]{width:100%;padding:14px;background:#020510;border:1px solid rgba
 button{padding:14px;background:linear-gradient(135deg,#0044cc,#00aaff);border:none;color:#fff;font-weight:700;border-radius:12px;cursor:pointer;font-family:'Orbitron',monospace;font-size:.85rem;width:100%;transition:.2s}
 button:hover{opacity:.9}
 .off-btn{background:linear-gradient(135deg,#cc0000,#ff3333)}
-.reset-btn{background:linear-gradient(135deg,#5a1525,#a02538);margin-top:10px}
 .code-card{background:#fff;color:#001020;padding:20px;border-radius:18px;margin-bottom:16px;text-align:center;border:2px solid #00d4ff}
 .code-value{font-family:'Orbitron',monospace;font-size:2rem;font-weight:900;color:#001020;letter-spacing:5px}
 .terminal-wrap{background:#020510;border:1px solid rgba(0,212,255,.25);border-radius:14px;overflow:hidden;margin-bottom:14px}
@@ -292,7 +260,7 @@ button:hover{opacity:.9}
   <div class="logo">RPA</div>
   <div>
     <div class="title">RIYAD PERSONAL AI</div>
-    <div class="subtitle">⚡ Personal Assistant & Bot Control ⚡</div>
+    <div class="subtitle">⚡ Powered by NxT AI ⚡</div>
   </div>
 </div>
 
@@ -304,7 +272,7 @@ button:hover{opacity:.9}
 ${pairingBlock}
 
 <div class="card">
-  <h3>⚙️ Bot ON / OFF Control</h3>
+  <h3>⚙️ Bot Control</h3>
   ${controlButtons}
   <div id="formMsg" style="margin-top:8px;font-size:0.8rem;color:#00ffea;"></div>
 </div>
@@ -315,8 +283,6 @@ ${pairingBlock}
     <div class="terminal">${logHTML}</div>
   </div>
 </div>
-
-${resetBlock}
 
 <div class="footer">DEVELOPED FOR RIYAD · PERSONAL USE ONLY</div>
 
