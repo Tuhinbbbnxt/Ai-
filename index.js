@@ -138,7 +138,7 @@ async function askAI(userMessage, attempts = 3) {
     if (lastErr?.response?.status === 429) {
         return '⚠️ অনেক request হয়ে গেছে, একটু পরে আবার চেষ্টা করুন।';
     }
-    return '⚠️ দুঃখিত, AI সার্ভারে সাময়িক সমস্যা। একটু পরে আবার চেষ্টা করুন।';
+    return 'আপনি যাকে মেসেজ করেছেন সে এখন অফলাইনে আছে আপনি চাইলে আমাকে বলতে পারেন। আমি তার ইআই অ্যাসিস্ট্যান্ট বট বলছি।';
 }
 
 // ── Image generation via Pollinations ──
