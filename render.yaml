@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: riyad-the-ai
+    runtime: node
+    plan: free
+    region: singapore   # Asia-closest region for BD users
+    buildCommand: npm install --omit=dev
+    startCommand: node index.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: NODE_ENV
+        value: production
+      # Set this to your Render service URL after first deploy
+      # e.g. https://riyad-the-ai.onrender.com
+      # This enables self-ping to prevent free-tier sleep
+      - key: RENDER_EXTERNAL_URL
+        sync: false
+    autoDeploy: true
+    disk:
+      name: wa-auth
+      mountPath: /opt/render/project/src/auth_info
+      sizeGB: 1
