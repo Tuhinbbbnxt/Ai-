@@ -90,7 +90,7 @@ async function askAI(userMessage) {
             || '⚠️ কোনো উত্তর পাওয়া যায়নি।';
     } catch (err) {
         pushLog('❌ AI Error: ' + (err.response?.status || err.message));
-        return '⚠️ দুঃখিত, AI সার্ভারে সমস্যা। একটু পরে আবার চেষ্টা করুন।';
+        return '⚠️ দুঃখিত, AI সার্ভারে সমস্যা। একটু পরে আবার  করুন।';
     }
 }
 
