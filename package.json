@@ -1,27 +1,19 @@
 {
   "name": "riyad-the-ai",
-  "version": "2.1.0",
-  "description": "RIYAD THE AI — WhatsApp bot with terminal dashboard, AI replies, image generation. Developed by 『 R I Y A D 』 t.me/zerox6t9",
+  "version": "2.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node index.js"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20.0.0"
   },
-  "keywords": ["whatsapp", "bot", "baileys", "ai", "riyad", "chatbot", "image-generation"],
-  "author": "RIYAD (t.me/zerox6t9)",
-  "license": "ISC",
   "dependencies": {
     "@hapi/boom": "^10.0.1",
-    "@whiskeysockets/baileys": "^6.7.0",
-    "axios": "^1.7.2",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "pino": "^9.3.2"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.4"
+    "@whiskeysockets/baileys": "^6.7.9",
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "pino": "^9.5.0"
   }
 }
