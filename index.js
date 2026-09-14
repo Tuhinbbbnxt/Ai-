@@ -3,7 +3,7 @@
 // ⚠️ GitHub-এ push করবেন না — Render Environment-এ সেট করলে
 //    নিচের line-টা মুছে দিতে পারেন
 // ═══════════════════════════════════════════════════════════
-process.env.GROQ_API_KEY = process.env.GROQ_API_KEY || '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';
+process.env.GROQ_API_KEY = process.env.GROQ_API_KEY || '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';
 
 require('dotenv').config();
 const express = require('express');
