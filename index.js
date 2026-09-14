@@ -70,7 +70,7 @@ function extractImagePrompt(text) {
 }
 
 // ── AI API ──
-const GEM_ID  = 'ba0fbe0d-976e-493a-afdb-6d8469e53df0';
+const GEM_ID  = '9a189417-74bd-4a01-9712-cd3762d9a76d';
 const API_URL = `https://nxtai.zipohostbd.workers.dev/api/use?gem=${GEM_ID}`;
 const API_KEY = 'nxt_2c624b598de74d58aa318ad7914f74a5';
 
